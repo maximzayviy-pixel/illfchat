@@ -82,6 +82,8 @@ export default function ProfileEdit({ user, onSave, onCancel }: ProfileEditProps
     }));
   };
 
+  const isFormValid = !loading && !(formData.newPassword && formData.newPassword !== formData.confirmPassword);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -313,7 +315,7 @@ export default function ProfileEdit({ user, onSave, onCancel }: ProfileEditProps
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 type="submit"
-                disabled={loading || (formData.newPassword && formData.newPassword !== formData.confirmPassword)}
+                disabled={!isFormValid}
                 className="flex-1 px-6 py-3 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-xl hover:from-primary-600 hover:to-secondary-600 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {loading ? (
