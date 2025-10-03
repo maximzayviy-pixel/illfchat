@@ -238,16 +238,22 @@ function ParticipantVideo({ participant, isLocal }: ParticipantVideoProps) {
     participant.on('trackSubscribed', handleTrackSubscribed);
     participant.on('trackUnsubscribed', handleTrackUnsubscribed);
 
-    // Check existing tracks
+    // Check existing tracks - for LocalParticipant we need to check published tracks
     if (participant instanceof LocalParticipant) {
-      participant.videoTracks.forEach((track) => {
-        if (track.track) {
+      // For local participant, we check published tracks
+      participant.publishedTracks.forEach((track) => {
+        if (track.kind === 'video' && track.track) {
           setVideoTrack(track.track);
+        } else if (track.kind === 'audio' && track.track) {
+          setAudioTrack(track.track);
         }
       });
-
-      participant.audioTracks.forEach((track) => {
-        if (track.track) {
+    } else {
+      // For remote participants, we check their tracks directly
+      participant.tracks.forEach((track) => {
+        if (track.kind === 'video' && track.track) {
+          setVideoTrack(track.track);
+        } else if (track.kind === 'audio' && track.track) {
           setAudioTrack(track.track);
         }
       });
