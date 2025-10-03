@@ -38,17 +38,17 @@ export default function VideoCall({ roomName, userName, token, wsUrl }: VideoCal
         newRoom.on(RoomEvent.Connected, () => {
           console.log('Connected to room');
           setIsConnected(true);
-          setParticipants(Array.from(newRoom.participants.values()));
+          setParticipants(Array.from(newRoom.remoteParticipants.values()).concat([newRoom.localParticipant]));
         });
 
         newRoom.on(RoomEvent.ParticipantConnected, (participant) => {
           console.log('Participant connected:', participant.identity);
-          setParticipants(Array.from(newRoom.participants.values()));
+          setParticipants(Array.from(newRoom.remoteParticipants.values()).concat([newRoom.localParticipant]));
         });
 
         newRoom.on(RoomEvent.ParticipantDisconnected, (participant) => {
           console.log('Participant disconnected:', participant.identity);
-          setParticipants(Array.from(newRoom.participants.values()));
+          setParticipants(Array.from(newRoom.remoteParticipants.values()).concat([newRoom.localParticipant]));
         });
 
         newRoom.on(RoomEvent.Disconnected, () => {
