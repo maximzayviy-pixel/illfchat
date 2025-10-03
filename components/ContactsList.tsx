@@ -10,7 +10,7 @@ interface User {
   username: string;
   email: string;
   avatar?: string;
-  createdAt?: string;
+  createdAt: string;
 }
 
 interface ContactsListProps {

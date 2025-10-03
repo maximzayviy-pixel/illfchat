@@ -15,7 +15,7 @@ interface User {
   username: string;
   email: string;
   avatar?: string;
-  createdAt?: string;
+  createdAt: string;
 }
 
 export default function Home() {
