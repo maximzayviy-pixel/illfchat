@@ -14,7 +14,7 @@ interface User {
 
 interface ContactsListProps {
   currentUser: User;
-  onStartCall: (userId: string, username: string) => void;
+  onStartCall: (userId: string, username: string, type: 'video' | 'audio') => void;
 }
 
 export default function ContactsList({ currentUser, onStartCall }: ContactsListProps) {
@@ -56,8 +56,7 @@ export default function ContactsList({ currentUser, onStartCall }: ContactsListP
   );
 
   const handleCall = (user: User, type: 'video' | 'audio') => {
-    const roomName = `call-${Math.random().toString(36).substring(2, 15)}`;
-    onStartCall(user.id, user.username);
+    onStartCall(user.id, user.username, type);
   };
 
   if (loading) {

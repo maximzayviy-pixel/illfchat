@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { LogOut, User, Phone, Video, Settings } from 'lucide-react';
+import { LogOut, User, Phone, Video, Settings, Shield } from 'lucide-react';
 import AuthForm from '@/components/AuthForm';
 import ContactsList from '@/components/ContactsList';
 import VideoCall from '@/components/VideoCall';
+import AudioCall from '@/components/AudioCall';
+import AdminPanel from '@/components/AdminPanel';
 import toast from 'react-hot-toast';
 
 interface User {
@@ -19,6 +21,8 @@ export default function Home() {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isInCall, setIsInCall] = useState(false);
+  const [callType, setCallType] = useState<'video' | 'audio' | null>(null);
+  const [showAdmin, setShowAdmin] = useState(false);
   const [callData, setCallData] = useState<{
     roomName: string;
     userName: string;
@@ -51,11 +55,11 @@ export default function Home() {
     toast.success('Вы вышли из аккаунта');
   };
 
-  const handleStartCall = async (userId: string, username: string) => {
+  const handleStartCall = async (userId: string, username: string, type: 'video' | 'audio') => {
     if (!token) return;
 
     try {
-      const roomName = `call-${Math.random().toString(36).substring(2, 15)}`;
+      const roomName = `call-${type}-${Math.random().toString(36).substring(2, 15)}`;
       
       const response = await fetch('/api/token', {
         method: 'POST',
@@ -77,6 +81,7 @@ export default function Home() {
           token: data.token,
           wsUrl: data.wsUrl,
         });
+        setCallType(type);
         setIsInCall(true);
       } else {
         toast.error('Ошибка создания звонка');
@@ -88,17 +93,41 @@ export default function Home() {
 
   const handleEndCall = () => {
     setIsInCall(false);
+    setCallType(null);
     setCallData(null);
   };
 
+  const isAdmin = user?.username === 'admin' || user?.email === 'admin@klubok.com';
+
   if (isInCall && callData) {
+    if (callType === 'video') {
+      return (
+        <VideoCall
+          roomName={callData.roomName}
+          userName={callData.userName}
+          token={callData.token}
+          wsUrl={callData.wsUrl}
+          onEndCall={handleEndCall}
+        />
+      );
+    } else if (callType === 'audio') {
+      return (
+        <AudioCall
+          roomName={callData.roomName}
+          userName={callData.userName}
+          token={callData.token}
+          wsUrl={callData.wsUrl}
+          onEndCall={handleEndCall}
+        />
+      );
+    }
+  }
+
+  if (showAdmin && isAdmin) {
     return (
-      <VideoCall
-        roomName={callData.roomName}
-        userName={callData.userName}
-        token={callData.token}
-        wsUrl={callData.wsUrl}
-        onEndCall={handleEndCall}
+      <AdminPanel
+        currentUser={user!}
+        onBack={() => setShowAdmin(false)}
       />
     );
   }
@@ -130,7 +159,24 @@ export default function Home() {
                   <User className="w-4 h-4 text-white" />
                 </div>
                 <span className="font-medium text-gray-900">{user.username}</span>
+                {isAdmin && (
+                  <span className="px-2 py-1 bg-red-100 text-red-600 text-xs font-semibold rounded-full">
+                    АДМИН
+                  </span>
+                )}
               </div>
+              
+              {isAdmin && (
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setShowAdmin(true)}
+                  className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                  title="Админ-панель"
+                >
+                  <Shield className="w-5 h-5" />
+                </motion.button>
+              )}
               
               <motion.button
                 whileHover={{ scale: 1.05 }}
