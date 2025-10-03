@@ -30,10 +30,11 @@ export default function ContactsList({ currentUser, onStartCall }: ContactsListP
 
   const fetchUsers = async () => {
     try {
-      const token = localStorage.getItem('token');
+      // Временно убираем авторизацию для тестирования
       const response = await fetch('/api/users', {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          // 'Authorization': `Bearer ${token}`,
         },
       });
 
@@ -43,9 +44,11 @@ export default function ContactsList({ currentUser, onStartCall }: ContactsListP
         const otherUsers = data.users.filter((user: User) => user.id !== currentUser.id);
         setUsers(otherUsers);
       } else {
-        toast.error('Ошибка загрузки контактов');
+        const errorData = await response.json();
+        toast.error(errorData.error || 'Ошибка загрузки контактов');
       }
     } catch (error) {
+      console.error('Fetch users error:', error);
       toast.error('Ошибка соединения');
     } finally {
       setLoading(false);

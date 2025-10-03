@@ -60,8 +60,6 @@ export default function Home() {
   };
 
   const handleStartCall = async (userId: string, username: string, type: 'video' | 'audio') => {
-    if (!token) return;
-
     try {
       const roomName = `call-${type}-${Math.random().toString(36).substring(2, 15)}`;
       
@@ -69,11 +67,13 @@ export default function Home() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          // Временно убираем авторизацию для тестирования
+          // 'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
           room: roomName,
           identity: user?.username || 'User',
+          name: user?.username || 'User',
         }),
       });
 
@@ -87,10 +87,13 @@ export default function Home() {
         });
         setCallType(type);
         setIsInCall(true);
+        toast.success(`${type === 'video' ? 'Видеозвонок' : 'Аудиозвонок'} начат`);
       } else {
-        toast.error('Ошибка создания звонка');
+        const errorData = await response.json();
+        toast.error(errorData.error || 'Ошибка создания звонка');
       }
     } catch (error) {
+      console.error('Call error:', error);
       toast.error('Ошибка соединения');
     }
   };
