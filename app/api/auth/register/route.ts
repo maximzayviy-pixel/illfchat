@@ -28,6 +28,7 @@ export async function POST(request: NextRequest) {
         username: user.username,
         email: user.email,
         avatar: user.avatar,
+        phoneNumber: user.phoneNumber,
         createdAt: user.createdAt.toISOString(),
       },
       token,

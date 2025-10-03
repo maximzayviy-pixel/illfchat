@@ -30,6 +30,7 @@ export async function GET(request: NextRequest) {
         username: user.username,
         email: user.email,
         avatar: user.avatar,
+        phoneNumber: user.phoneNumber,
         createdAt: user.createdAt.toISOString(),
       }))
     });

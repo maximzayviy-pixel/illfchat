@@ -8,6 +8,7 @@ export interface User {
   username: string;
   email: string;
   avatar?: string;
+  phoneNumber?: string;
   createdAt: Date;
 }
 
@@ -47,6 +48,7 @@ export async function createUser(username: string, email: string, password: stri
     id: Math.random().toString(36).substring(2, 15),
     username,
     email,
+    phoneNumber: generatePhoneNumber(),
     createdAt: new Date(),
   };
 
@@ -54,6 +56,13 @@ export async function createUser(username: string, email: string, password: stri
   userPasswords[user.id] = hashedPassword;
 
   return user;
+}
+
+function generatePhoneNumber(): string {
+  // Генерируем номер в формате +666-XXX-XXXX
+  const areaCode = Math.floor(Math.random() * 900) + 100; // 100-999
+  const number = Math.floor(Math.random() * 9000) + 1000; // 1000-9999
+  return `+666-${areaCode}-${number}`;
 }
 
 export async function authenticateUser(email: string, password: string): Promise<User | null> {
