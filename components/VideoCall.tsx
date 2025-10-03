@@ -239,17 +239,21 @@ function ParticipantVideo({ participant, isLocal }: ParticipantVideoProps) {
     participant.on('trackUnsubscribed', handleTrackUnsubscribed);
 
     // Check existing tracks
-    participant.videoTracks.forEach((track) => {
-      if (track.track) {
-        setVideoTrack(track.track);
-      }
-    });
+    if ('videoTracks' in participant) {
+      participant.videoTracks.forEach((track) => {
+        if (track.track) {
+          setVideoTrack(track.track);
+        }
+      });
+    }
 
-    participant.audioTracks.forEach((track) => {
-      if (track.track) {
-        setAudioTrack(track.track);
-      }
-    });
+    if ('audioTracks' in participant) {
+      participant.audioTracks.forEach((track) => {
+        if (track.track) {
+          setAudioTrack(track.track);
+        }
+      });
+    }
 
     return () => {
       participant.off('trackSubscribed', handleTrackSubscribed);
