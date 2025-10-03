@@ -11,17 +11,20 @@ import {
   Users, 
   Settings,
   Maximize2,
-  Minimize2
+  Minimize2,
+  User
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface VideoCallProps {
   roomName: string;
   userName: string;
   token: string;
   wsUrl: string;
+  onEndCall: () => void;
 }
 
-export default function VideoCall({ roomName, userName, token, wsUrl }: VideoCallProps) {
+export default function VideoCall({ roomName, userName, token, wsUrl, onEndCall }: VideoCallProps) {
   const [room, setRoom] = useState<Room | null>(null);
   const [participants, setParticipants] = useState<(RemoteParticipant | LocalParticipant)[]>([]);
   const [isConnected, setIsConnected] = useState(false);
@@ -103,7 +106,7 @@ export default function VideoCall({ roomName, userName, token, wsUrl }: VideoCal
     if (room) {
       room.disconnect();
     }
-    window.location.href = '/';
+    onEndCall();
   };
 
   const toggleFullscreen = () => {
@@ -119,13 +122,17 @@ export default function VideoCall({ roomName, userName, token, wsUrl }: VideoCal
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-900">
-        <div className="text-center text-white">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center text-white"
+        >
           <h2 className="text-2xl font-bold mb-4">Ошибка подключения</h2>
           <p className="mb-4">{error}</p>
-          <button onClick={() => window.location.href = '/'} className="btn-primary">
+          <button onClick={onEndCall} className="btn-primary">
             Вернуться на главную
           </button>
-        </div>
+        </motion.div>
       </div>
     );
   }
@@ -133,11 +140,15 @@ export default function VideoCall({ roomName, userName, token, wsUrl }: VideoCal
   if (!isConnected) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-900">
-        <div className="text-center text-white">
-          <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <h2 className="text-2xl font-bold mb-2">Подключение к комнате...</h2>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center text-white"
+        >
+          <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <h2 className="text-2xl font-bold mb-2">Подключение к звонку...</h2>
           <p className="text-gray-300">Комната: {roomName}</p>
-        </div>
+        </motion.div>
       </div>
     );
   }
@@ -145,9 +156,13 @@ export default function VideoCall({ roomName, userName, token, wsUrl }: VideoCal
   return (
     <div className={`min-h-screen bg-gray-900 text-white ${isFullscreen ? 'fixed inset-0 z-50' : ''}`}>
       {/* Header */}
-      <div className="bg-gray-800 px-4 py-3 flex items-center justify-between">
+      <motion.div
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="bg-gray-800/80 backdrop-blur-md px-4 py-3 flex items-center justify-between"
+      >
         <div className="flex items-center gap-3">
-          <div className="w-3 h-3 bg-green-500 rounded-full" />
+          <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
           <h1 className="text-lg font-semibold">{roomName}</h1>
           <span className="text-sm text-gray-400">
             {participants.length} участник{participants.length !== 1 ? 'ов' : ''}
@@ -161,11 +176,11 @@ export default function VideoCall({ roomName, userName, token, wsUrl }: VideoCal
             {isFullscreen ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
           </button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Video Grid */}
       <div className="flex-1 p-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 h-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full max-w-6xl mx-auto">
           {participants.map((participant, index) => (
             <ParticipantVideo
               key={participant.identity}
@@ -177,34 +192,44 @@ export default function VideoCall({ roomName, userName, token, wsUrl }: VideoCal
       </div>
 
       {/* Controls */}
-      <div className="bg-gray-800 px-4 py-4">
-        <div className="flex items-center justify-center gap-4">
-          <button
+      <motion.div
+        initial={{ y: 50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="bg-gray-800/80 backdrop-blur-md px-4 py-4"
+      >
+        <div className="flex items-center justify-center gap-4 max-w-md mx-auto">
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
             onClick={toggleMute}
-            className={`p-3 rounded-full transition-colors ${
+            className={`p-4 rounded-full transition-all duration-300 ${
               isMuted ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-600 hover:bg-gray-700'
             }`}
           >
             {isMuted ? <MicOff className="w-6 h-6" /> : <Mic className="w-6 h-6" />}
-          </button>
+          </motion.button>
 
-          <button
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
             onClick={toggleVideo}
-            className={`p-3 rounded-full transition-colors ${
+            className={`p-4 rounded-full transition-all duration-300 ${
               !isVideoEnabled ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-600 hover:bg-gray-700'
             }`}
           >
             {isVideoEnabled ? <Video className="w-6 h-6" /> : <VideoOff className="w-6 h-6" />}
-          </button>
+          </motion.button>
 
-          <button
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
             onClick={leaveRoom}
-            className="p-3 bg-red-600 hover:bg-red-700 rounded-full transition-colors"
+            className="p-4 bg-red-600 hover:bg-red-700 rounded-full transition-all duration-300"
           >
             <Phone className="w-6 h-6" />
-          </button>
+          </motion.button>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
@@ -238,9 +263,6 @@ function ParticipantVideo({ participant, isLocal }: ParticipantVideoProps) {
     participant.on('trackSubscribed', handleTrackSubscribed);
     participant.on('trackUnsubscribed', handleTrackUnsubscribed);
 
-    // Tracks will be handled through trackSubscribed events
-    // No need to check existing tracks here as they will be processed by event handlers
-
     return () => {
       participant.off('trackSubscribed', handleTrackSubscribed);
       participant.off('trackUnsubscribed', handleTrackUnsubscribed);
@@ -258,7 +280,11 @@ function ParticipantVideo({ participant, isLocal }: ParticipantVideoProps) {
   }, [audioTrack, participant.identity]);
 
   return (
-    <div className="relative bg-gray-700 rounded-lg overflow-hidden aspect-video">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className="relative bg-gray-700 rounded-2xl overflow-hidden aspect-video"
+    >
       {videoTrack ? (
         <video
           ref={(video) => {
@@ -272,10 +298,12 @@ function ParticipantVideo({ participant, isLocal }: ParticipantVideoProps) {
           playsInline
         />
       ) : (
-        <div className="w-full h-full flex items-center justify-center bg-gray-600">
+        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-600 to-gray-700">
           <div className="text-center">
-            <Users className="w-12 h-12 mx-auto mb-2 text-gray-400" />
-            <p className="text-sm text-gray-400">{participant.identity}</p>
+            <div className="w-16 h-16 bg-gray-500 rounded-full flex items-center justify-center mx-auto mb-3">
+              <User className="w-8 h-8 text-white" />
+            </div>
+            <p className="text-sm text-gray-300 font-medium">{participant.identity}</p>
           </div>
         </div>
       )}
@@ -289,9 +317,9 @@ function ParticipantVideo({ participant, isLocal }: ParticipantVideoProps) {
         />
       )}
 
-      <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 px-2 py-1 rounded text-sm">
+      <div className="absolute bottom-3 left-3 bg-black/50 backdrop-blur-sm px-3 py-1 rounded-full text-sm">
         {participant.identity} {isLocal && '(Вы)'}
       </div>
-    </div>
+    </motion.div>
   );
 }
