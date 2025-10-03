@@ -239,7 +239,7 @@ function ParticipantVideo({ participant, isLocal }: ParticipantVideoProps) {
     participant.on('trackUnsubscribed', handleTrackUnsubscribed);
 
     // Check existing tracks
-    if ('videoTracks' in participant) {
+    if ('videoTracks' in participant && participant instanceof LocalParticipant) {
       participant.videoTracks.forEach((track) => {
         if (track.track) {
           setVideoTrack(track.track);
@@ -247,7 +247,7 @@ function ParticipantVideo({ participant, isLocal }: ParticipantVideoProps) {
       });
     }
 
-    if ('audioTracks' in participant) {
+    if ('audioTracks' in participant && participant instanceof LocalParticipant) {
       participant.audioTracks.forEach((track) => {
         if (track.track) {
           setAudioTrack(track.track);
