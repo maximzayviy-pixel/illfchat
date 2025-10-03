@@ -42,3 +42,6 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
+// Добавляем динамическую конфигурацию для предотвращения статической генерации
+export const dynamic = 'force-dynamic';

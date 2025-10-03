@@ -10,8 +10,6 @@ export const metadata: Metadata = {
   description: 'Военная система видеозвонков и аудиосвязи',
   keywords: 'военная связь, видеозвонки, аудиозвонки, военная система, клубок',
   manifest: '/manifest.json',
-  themeColor: '#3a9d3a',
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
@@ -21,6 +19,14 @@ export const metadata: Metadata = {
     icon: '/icons/icon-192x192.png',
     apple: '/icons/icon-192x192.png',
   },
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: '#3a9d3a',
 }
 
 export default function RootLayout({
@@ -41,20 +47,20 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512x512.png" />
       </head>
       <body className={inter.className}>
-        <div className="min-h-screen bg-gradient-to-br from-military-100 via-camo-tan to-military-200">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
           {children}
           <Toaster 
             position="top-right"
             toastOptions={{
               duration: 4000,
               style: {
-                background: 'rgba(58, 157, 58, 0.9)',
-                backdropFilter: 'blur(10px)',
-                border: '2px solid rgba(58, 157, 58, 0.3)',
-                borderRadius: '12px',
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
-                color: 'white',
-                fontWeight: 'bold',
+                background: 'rgba(255, 255, 255, 0.95)',
+                backdropFilter: 'blur(20px)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: '16px',
+                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+                color: '#1e293b',
+                fontWeight: '500',
               },
             }}
           />

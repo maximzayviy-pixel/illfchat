@@ -13,8 +13,64 @@ export interface User {
 }
 
 // Простое хранилище пользователей в памяти (в реальном приложении используйте базу данных)
-const users: User[] = [];
-const userPasswords: { [userId: string]: string } = {};
+let users: User[] = [];
+let userPasswords: { [userId: string]: string } = {};
+
+// Инициализация с тестовыми пользователями
+function initializeUsers() {
+  if (users.length === 0) {
+    // Создаем тестовых пользователей
+    const testUsers = [
+      {
+        id: 'admin-001',
+        username: 'admin',
+        email: 'admin@klubok.com',
+        phoneNumber: '+666-001-0001',
+        createdAt: new Date(),
+      },
+      {
+        id: 'user-002',
+        username: 'Makar',
+        email: 'makar@klubok.com',
+        phoneNumber: '+666-002-0002',
+        createdAt: new Date(),
+      },
+      {
+        id: 'user-003',
+        username: 'Soldier1',
+        email: 'soldier1@klubok.com',
+        phoneNumber: '+666-003-0003',
+        createdAt: new Date(),
+      },
+      {
+        id: 'user-004',
+        username: 'Commander',
+        email: 'commander@klubok.com',
+        phoneNumber: '+666-004-0004',
+        createdAt: new Date(),
+      },
+      {
+        id: 'user-005',
+        username: 'Sniper',
+        email: 'sniper@klubok.com',
+        phoneNumber: '+666-005-0005',
+        createdAt: new Date(),
+      }
+    ];
+
+    users = testUsers;
+    
+    // Устанавливаем пароли для тестовых пользователей
+    userPasswords['admin-001'] = '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/4K8K8K8'; // admin123
+    userPasswords['user-002'] = '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/4K8K8K8'; // makar123
+    userPasswords['user-003'] = '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/4K8K8K8'; // soldier123
+    userPasswords['user-004'] = '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/4K8K8K8'; // commander123
+    userPasswords['user-005'] = '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/4K8K8K8'; // sniper123
+  }
+}
+
+// Инициализируем пользователей при первом импорте
+initializeUsers();
 
 export async function hashPassword(password: string): Promise<string> {
   return await bcrypt.hash(password, 12);

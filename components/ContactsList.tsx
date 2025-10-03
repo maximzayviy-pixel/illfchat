@@ -72,31 +72,26 @@ export default function ContactsList({ currentUser, onStartCall }: ContactsListP
 
   return (
     <div className="space-y-6">
-      {/* Military Search */}
-      <div className="relative">
-        <div className="absolute inset-0 bg-military-pattern opacity-5 rounded-2xl"></div>
-        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-military-600" />
+      {/* Modern Search */}
+      <div className="relative group">
+        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-primary-500 transition-colors" />
         <input
           type="text"
           placeholder="Поиск по имени, email или номеру..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="relative w-full pl-12 pr-4 py-4 bg-military-50/90 backdrop-blur-md border-2 border-military-300 rounded-2xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all text-military-900 placeholder-military-500 font-military"
+          className="w-full pl-12 pr-4 py-4 bg-white/80 backdrop-blur-xl border border-slate-200 rounded-2xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-300 text-slate-900 placeholder-slate-500 shadow-soft hover:shadow-medium"
         />
-        <div className="absolute inset-0 rounded-2xl border-2 border-transparent bg-gradient-to-r from-primary-500/20 to-secondary-500/20 opacity-0 hover:opacity-100 transition-opacity pointer-events-none"></div>
       </div>
 
       {/* Users List */}
       <div className="space-y-3">
         {filteredUsers.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="relative">
-              <div className="w-16 h-16 bg-military-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                <User className="w-8 h-8 text-military-600" />
-              </div>
-              <div className="absolute inset-0 bg-military-pattern opacity-10 rounded-full"></div>
+          <div className="text-center py-16">
+            <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <User className="w-10 h-10 text-slate-400" />
             </div>
-            <p className="text-military-600 font-military">
+            <p className="text-slate-600 text-lg">
               {searchTerm ? 'Контакты не найдены' : 'Нет доступных контактов'}
             </p>
           </div>
@@ -107,47 +102,47 @@ export default function ContactsList({ currentUser, onStartCall }: ContactsListP
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="relative bg-military-50/80 backdrop-blur-md border-2 border-military-200 rounded-2xl p-4 hover:shadow-lg hover:border-primary-500 transition-all duration-300 group"
+              className="bg-white/70 backdrop-blur-xl border border-white/20 rounded-2xl p-6 hover:shadow-large hover:bg-white/80 transition-all duration-300 group"
             >
-              <div className="absolute inset-0 bg-military-pattern opacity-5 rounded-2xl"></div>
-              <div className="relative flex items-center justify-between">
+              <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <div className="relative">
-                    <div className="w-14 h-14 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full flex items-center justify-center shadow-lg">
-                      <User className="w-7 h-7 text-white" />
+                    <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center shadow-medium group-hover:shadow-glow transition-all duration-300">
+                      <User className="w-8 h-8 text-white" />
                     </div>
-                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white animate-pulse-military"></div>
+                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-success-500 rounded-full border-2 border-white"></div>
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-bold text-military-900 text-lg">{user.username}</h3>
-                    <p className="text-sm text-military-600 mb-1">{user.email}</p>
+                    <h3 className="font-semibold text-slate-900 text-lg mb-1">{user.username}</h3>
+                    <p className="text-slate-600 mb-2">{user.email}</p>
                     {user.phoneNumber && (
-                      <p className="text-sm font-military text-primary-600 bg-primary-100 px-2 py-1 rounded-lg inline-block">
-                        📞 {user.phoneNumber}
-                      </p>
+                      <div className="inline-flex items-center space-x-1 bg-primary-50 text-primary-700 px-3 py-1 rounded-xl text-sm font-medium">
+                        <Phone className="w-3 h-3" />
+                        <span>{user.phoneNumber}</span>
+                      </div>
                     )}
                   </div>
                 </div>
                 
                 <div className="flex items-center space-x-3">
                   <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => handleCall(user, 'video')}
-                    className="p-3 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
+                    className="p-3 bg-gradient-to-br from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white rounded-xl transition-all duration-300 shadow-medium hover:shadow-large"
                     title="Видеозвонок"
                   >
-                    <Video className="w-6 h-6" />
+                    <Video className="w-5 h-5" />
                   </motion.button>
                   
                   <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => handleCall(user, 'audio')}
-                    className="p-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
+                    className="p-3 bg-gradient-to-br from-success-500 to-success-600 hover:from-success-600 hover:to-success-700 text-white rounded-xl transition-all duration-300 shadow-medium hover:shadow-large"
                     title="Аудиозвонок"
                   >
-                    <Phone className="w-6 h-6" />
+                    <Phone className="w-5 h-5" />
                   </motion.button>
                 </div>
               </div>
