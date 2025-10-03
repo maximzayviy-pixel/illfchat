@@ -238,14 +238,8 @@ function ParticipantVideo({ participant, isLocal }: ParticipantVideoProps) {
     participant.on('trackSubscribed', handleTrackSubscribed);
     participant.on('trackUnsubscribed', handleTrackUnsubscribed);
 
-    // Check existing tracks - use the correct API for both participant types
-    participant.tracks.forEach((track) => {
-      if (track.kind === 'video' && track.track) {
-        setVideoTrack(track.track);
-      } else if (track.kind === 'audio' && track.track) {
-        setAudioTrack(track.track);
-      }
-    });
+    // Tracks will be handled through trackSubscribed events
+    // No need to check existing tracks here as they will be processed by event handlers
 
     return () => {
       participant.off('trackSubscribed', handleTrackSubscribed);
